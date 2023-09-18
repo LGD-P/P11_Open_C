@@ -20,7 +20,6 @@ def test_not_enought_points_to_purchase(client, mocker_loadClubs, mocker_loadCom
 
 
 
-
 def test_club_points_are_updated(client,mocker_loadClubs,mocker_loadCompetitions):
     clubs = mocker_loadClubs
     club = [club for club in clubs if club['name'] == 'Dead Lift'][0]
