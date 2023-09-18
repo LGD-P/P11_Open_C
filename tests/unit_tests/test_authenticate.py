@@ -21,3 +21,14 @@ def test_email_not_in_data_base_to_authenticate(client):
 
     assert first_p.contents[0].strip() == "The address you entered does not match \
         no registered clubs. Please enter a valid address.".strip()
+
+
+def test_no_email_to_authenticate(client):
+    bad_response = client.post('/showSummary', data={"email": ""})
+
+    assert bad_response.status_code == 400
+    soup = BeautifulSoup(bad_response.data, 'html.parser')
+    first_p = soup.find("p", {"id": "error"})
+
+    assert first_p.contents[0].strip() == "The address you entered does not match \
+        no registered clubs. Please enter a valid address.".strip()
