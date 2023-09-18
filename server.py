@@ -32,9 +32,14 @@ def index():
 
 @app.route('/showSummary',methods=['POST'])
 def showSummary():
-    club = [club for club in clubs if club['email'] == request.form['email']][0]
-    return render_template('welcome.html',club=club,competitions=competitions)
+    error = "The address you entered does not match \
+        no registered clubs. Please enter a valid address."
+    club = [club for club in clubs if club['email'] == request.form['email']]
+    if len(club) == 0:
+        return (render_template('index.html', error=error), 400)
 
+    return render_template('welcome.html', club=club[0],
+                           competitions=competitions)
 
 @app.route('/book/<competition>/<club>')
 def book(competition,club):
