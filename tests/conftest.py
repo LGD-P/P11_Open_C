@@ -24,7 +24,7 @@ def mocker_loadClubs(mocker):
             "points": "12"
         }
     ]
-    mocker.patch('server.clubs', clubs)
+    mocker.patch('P11_Open_C.server.clubs', clubs)
     return clubs
 
 
@@ -41,7 +41,7 @@ def mocker_loadCompetitions(mocker):
                 }
             ]
 
-    mocker.patch('server.competitions', competitions)
+    mocker.patch('P11_Open_C.server.competitions', competitions)
     return competitions
 
 
