@@ -13,6 +13,17 @@ def loadClubs():
          listOfClubs = json.load(c)['clubs']
          return listOfClubs
 
+def updateClubsPoints(club_name, new_value):
+    file_path = get_absolute_path('clubs.json')
+    with open(file_path, 'r+') as c:
+        clubs = json.load(c)
+        for club in clubs['clubs']:
+            if club['name'] == club_name:
+                club['points'] = new_value
+        c.seek(0)
+        json.dump(clubs, c, indent=4)
+        c.truncate()
+
 def loadCompetitions():
     file_path = get_absolute_path('competitions.json')
     with open(file_path) as comps:
@@ -51,15 +62,33 @@ def book(competition,club):
         flash("Something went wrong-please try again")
         return render_template('welcome.html', club=club, competitions=competitions)
 
-
 @app.route('/purchasePlaces',methods=['POST'])
 def purchasePlaces():
-    competition = [c for c in competitions if c['name'] == request.form['competition']][0]
+    error_message = "Choice not available please check your points"
     club = [c for c in clubs if c['name'] == request.form['club']][0]
+    placesRequired = request.form['places']
+    competition = [c for c in competitions if c['name'] == request.form['competition']][0]
+
+    if not placesRequired.isdigit():
+        flash(error_message)
+        return render_template('welcome.html', club=club,
+                               competitions=competitions), 200
+
     placesRequired = int(request.form['places'])
-    competition['numberOfPlaces'] = int(competition['numberOfPlaces'])-placesRequired
-    flash('Great-booking complete!')
-    return render_template('welcome.html', club=club, competitions=competitions)
+
+    if 0 < placesRequired <= 12 and placesRequired <= int(club["points"]):
+        club['points'] = str(int(club['points']) - placesRequired)
+        competition['numberOfPlaces'] = str(int(competition['numberOfPlaces']) - placesRequired)
+        updateClubsPoints(club['name'],club['points'])
+        flash('Great-booking complete!')
+        return render_template('welcome.html', club=club,
+                               competitions=competitions),200
+    else:
+        flash(error_message)
+        return render_template('welcome.html', club=club,
+                               competitions=competitions), 200
+
+
 
 
 # TODO: Add route for points display
