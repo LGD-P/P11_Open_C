@@ -1,15 +1,21 @@
 import json
 from flask import Flask,render_template,request,redirect,flash,url_for
+import os
+
+def get_absolute_path(file):
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    return  os.path.join(base_dir, file)
 
 
 def loadClubs():
-    with open('clubs.json') as c:
+    file_path = get_absolute_path('clubs.json')
+    with open(file_path) as c:
          listOfClubs = json.load(c)['clubs']
          return listOfClubs
 
-
 def loadCompetitions():
-    with open('competitions.json') as comps:
+    file_path = get_absolute_path('competitions.json')
+    with open(file_path) as comps:
          listOfCompetitions = json.load(comps)['competitions']
          return listOfCompetitions
 
