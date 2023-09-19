@@ -43,3 +43,14 @@ def test_user_try_to_purchase_by_none(client,mocker_loadClubs,mocker_loadCompeti
     soup = BeautifulSoup(response.data, 'html.parser')
     message = soup.find('li', {'id': 'error_message'})
     assert message.contents[0].strip() == expected_message
+
+
+def test_competition_points_are_updated(client,mocker_loadClubs, mocker_loadCompetitions):
+    competitions = mocker_loadCompetitions
+    competition = [c for c in competitions if c['name'] == "Summer Festival"][0]
+    initial_points = competition["numberOfPlaces"]
+    assert initial_points == "11"
+
+    client.post('/purchasePlaces', data={"club": "Dead Lift","competition": "Summer Festival","places": 2})
+    updated_points = competition["numberOfPlaces"]
+    assert updated_points == "9"
