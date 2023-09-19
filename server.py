@@ -1,3 +1,4 @@
+import datetime
 import json
 from flask import Flask,render_template,request,redirect,flash,url_for
 import os
@@ -42,12 +43,23 @@ def updateCompetitionPoints(competition_name, new_value):
         json.dump(competitions, c, indent=4)
         c.truncate()
 
+def checkCompetitionDate(competitions):
+    booking_available = []
+    current_date = datetime.datetime.now()
+    for competition in competitions:
+        competition_date = datetime.datetime.strptime(
+            competition['date'], "%Y-%m-%d %H:%M:%S")
+        if competition_date > current_date:
+            booking_available.append(competition)
+    return booking_available
+
 
 app = Flask(__name__)
 app.secret_key = 'something_special'
 
 competitions = loadCompetitions()
 clubs = loadClubs()
+available_competition = checkCompetitionDate(competitions)
 
 @app.route('/')
 def index():
@@ -62,17 +74,19 @@ def showSummary():
         return (render_template('index.html', error=error), 400)
 
     return render_template('welcome.html', club=club[0],
-                           competitions=competitions)
+                           competitions=competitions,available_competition=available_competition)
 
 @app.route('/book/<competition>/<club>')
 def book(competition,club):
     foundClub = [c for c in clubs if c['name'] == club][0]
     foundCompetition = [c for c in competitions if c['name'] == competition][0]
     if foundClub and foundCompetition:
-        return render_template('booking.html',club=foundClub,competition=foundCompetition)
+        return render_template('booking.html',club=foundClub,competition=foundCompetition,
+                               available_competition=available_competition)
     else:
         flash("Something went wrong-please try again")
-        return render_template('welcome.html', club=club, competitions=competitions)
+        return render_template('welcome.html', club=club, competitions=competitions,
+                               available_competition=available_competition)
 
 @app.route('/purchasePlaces',methods=['POST'])
 def purchasePlaces():
@@ -84,7 +98,7 @@ def purchasePlaces():
     if not placesRequired.isdigit():
         flash(error_message)
         return render_template('welcome.html', club=club,
-                               competitions=competitions), 200
+                               competitions=competitions,available_competition=available_competition), 200
 
     placesRequired = int(request.form['places'])
 
@@ -95,11 +109,11 @@ def purchasePlaces():
         updateCompetitionPoints(competition['name'], competition['numberOfPlaces'])
         flash('Great-booking complete!')
         return render_template('welcome.html', club=club,
-                               competitions=competitions),200
+                               competitions=competitions,available_competition=available_competition),200
     else:
         flash(error_message)
         return render_template('welcome.html', club=club,
-                               competitions=competitions), 200
+                               competitions=competitions,available_competition=available_competition), 200
 
 
 
