@@ -13,10 +13,16 @@ def test_is_competition_postdated(client,mocker_loadCompetitions,mocker_loadClub
 
 def test_is_competition_available(client,mocker_loadCompetitions,mocker_loadClubs, mocker_checkCompetitionDate):
     response = client.post('/showSummary', data={"email": "kate@strongirls.co.uk"})
-    test = mocker_checkCompetitionDate
-    print(test)
+    soup = BeautifulSoup(response.data, 'html.parser')
+    message = soup.find('a', {'id': 'competition available'})
+    assert message.contents[0].strip() == "Book Places"
+
+
+def test_is_user_trying_prohibited_booking(client,mocker_loadClubs,mocker_loadCompetitions):
+    response = client.get("/book/Summer Festival/Strong girls")
     soup = BeautifulSoup(response.data, 'html.parser')
     print(soup)
-    message = soup.find('a', {'id': 'competition available'})
-    print( message)
-    assert message.contents[0].strip() == "Book Places"
+    error_messages = soup.find('li', {'id': 'error_message'})
+    assert error_messages.contents[0].strip() == "Something went wrong-please try again"
+
+

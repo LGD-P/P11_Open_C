@@ -77,17 +77,19 @@ def showSummary():
                            competitions=competitions,available_competition=available_competition)
 
 @app.route('/book/<competition>/<club>')
-def book(competition,club):
+def book(competition, club):
     foundClub = [c for c in clubs if c['name'] == club][0]
     foundCompetition = [c for c in competitions if c['name'] == competition][0]
+    available_competition = checkCompetitionDate(competitions)
 
-    if foundClub and foundCompetition:
-        return render_template('booking.html',club=foundClub,competition=foundCompetition,
-                               available_competition=available_competition)
-    else:
+    if foundCompetition not in available_competition:
         flash("Something went wrong-please try again")
-        return render_template('welcome.html', club=club, competitions=competitions,
-                               available_competition=available_competition)
+        # to avoid manual bad request as : book/Spring Festival/She Lifts kate@shelifts.co.uk
+        return render_template('welcome.html', club=club,
+                               competitions=competitions, available_competition=available_competition), 200
+
+    elif foundClub and foundCompetition:
+        return render_template('booking.html', club=foundClub, competition=foundCompetition)
 
 @app.route('/purchasePlaces',methods=['POST'])
 def purchasePlaces():
