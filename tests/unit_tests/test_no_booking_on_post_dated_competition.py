@@ -26,3 +26,5 @@ def test_is_user_trying_prohibited_booking(client,mocker_loadClubs,mocker_loadCo
     assert error_messages.contents[0].strip() == "Something went wrong-please try again"
 
 
+def test_book_available(client,mocker_loadClubs,mocker_loadCompetitions):
+    assert client.get('book/Heavy Fest/Dead Lift')
