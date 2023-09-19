@@ -1,3 +1,5 @@
+import datetime
+
 from pytest import fixture
 from P11_Open_C.server import app
 
@@ -45,3 +47,17 @@ def mocker_loadCompetitions(mocker):
     return competitions
 
 
+
+@fixture
+def mocker_checkCompetitionDate(mocker, mocker_loadCompetitions):
+    competitions = mocker_loadCompetitions
+    booking_available = []
+    current_date = datetime.datetime.now()
+    for competition in competitions:
+        competition_date = datetime.datetime.strptime(
+            competition['date'], "%Y-%m-%d %H:%M:%S")
+        if competition_date > current_date:
+            booking_available.append(competition)
+
+    mocker.patch('P11_Open_C.server.available_competition',booking_available)
+    return booking_available

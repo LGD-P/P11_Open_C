@@ -69,10 +69,10 @@ def index():
 def showSummary():
     error = "The address you entered does not match \
         no registered clubs. Please enter a valid address."
+
     club = [club for club in clubs if club['email'] == request.form['email']]
     if len(club) == 0:
         return (render_template('index.html', error=error), 400)
-
     return render_template('welcome.html', club=club[0],
                            competitions=competitions,available_competition=available_competition)
 
@@ -80,6 +80,7 @@ def showSummary():
 def book(competition,club):
     foundClub = [c for c in clubs if c['name'] == club][0]
     foundCompetition = [c for c in competitions if c['name'] == competition][0]
+
     if foundClub and foundCompetition:
         return render_template('booking.html',club=foundClub,competition=foundCompetition,
                                available_competition=available_competition)
@@ -94,6 +95,7 @@ def purchasePlaces():
     club = [c for c in clubs if c['name'] == request.form['club']][0]
     placesRequired = request.form['places']
     competition = [c for c in competitions if c['name'] == request.form['competition']][0]
+
 
     if not placesRequired.isdigit():
         flash(error_message)
