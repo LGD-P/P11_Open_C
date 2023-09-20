@@ -1,0 +1,34 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GUDLFT Clubs List</title>
+</head>
+
+<body>
+<h1 style = "text-align:center">GUDLFT Clubs List</h1>
+<div class="table-container" align="center">
+  <table class="clubs-table" style="border-collapse: collapse; width: 70%">
+      <thead>
+        <tr>
+            <th style="border: 1px solid black; text-align: center;">Points</th>
+            <th style="border: 1px solid black; text-align: center;">Name</th>
+            <th style="border: 1px solid black; text-align: center;">Email</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for club in clubs %}
+        <tr class="data">
+            <td style="border: 1px solid black; text-align: center;">{{ club['points'] }}</td>
+            <td style="border: 1px solid black; text-align: center;">{{ club['name'] }}</td>
+            <td style="border: 1px solid black; text-align: center;">{{ club['email'] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div style="padding-top: 25px;">
+        <a id="back" href="{{ url_for('index') }}">Back</a>
+    </div>
+</div>
+</body>
+</html>
