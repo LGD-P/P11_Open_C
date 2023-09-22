@@ -69,3 +69,9 @@ This project was forked from : <a> https://github.com/OpenClassrooms-Student-Cen
 
       pytest tests/ --cov=. --cov-report html
 
+
+
+<p align='center'> 
+        <img src="pytest--cov.png"/>
+</p>
+
