@@ -120,9 +120,6 @@ def purchasePlaces():
                                competitions=competitions,available_competition=available_competition), 200
 
 
-
-
-
 @app.route('/clubs-list', methods=['GET'])
 def clubs_list():
     sorted_clubs = sorted(clubs, key=lambda x: int(x['points']), reverse=True)
@@ -131,4 +128,5 @@ def clubs_list():
 
 @app.route('/logout')
 def logout():
+    flash('Logout success')
     return redirect(url_for('index'))

@@ -32,3 +32,13 @@ def test_no_email_to_authenticate(client):
 
     assert first_p.contents[0].strip() == "The address you entered does not match \
         no registered clubs. Please enter a valid address.".strip()
+
+
+
+def test_log_out(client):
+    response =  client.get("/logout", follow_redirects=True)
+    assert response
+
+    soup = BeautifulSoup(response.data, 'html.parser')
+    logout_message = soup.find("li", {"id": "logout done"})
+    assert logout_message.text == "Logout success"

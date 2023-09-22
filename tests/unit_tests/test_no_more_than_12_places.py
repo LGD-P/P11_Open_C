@@ -25,7 +25,6 @@ def test_more_than_12_places_to_purchase(client, mocker_loadClubs, mocker_loadCo
                                                         "places": str(invalid_max_purchase)})
 
         soup = BeautifulSoup(response.data, 'html.parser')
-        print(soup)
         message = soup.find('li', {'id': 'error_message'})
         assert message.contents[0].strip() == expected_message
 

@@ -14,7 +14,6 @@ def test_not_enought_points_to_purchase(client, mocker_loadClubs, mocker_loadCom
 
         soup = BeautifulSoup(response.data, 'html.parser')
         error_messages = soup.find('li', {'id': 'error_message'})
-        print(error_messages)
 
         assert error_messages.contents[0].strip() == "Choice not available please check your points"
 
